@@ -148,7 +148,18 @@ function makeRequest($url) {
   $responseHeaders = substr($response, 0, $headerSize);
   $responseBody = substr($response, $headerSize);
 
-  return array("headers" => $responseHeaders, "body" => $responseBody, "responseInfo" => $responseInfo);
+
+
+  preg_match_all('/^Set-Cookie:\s*([^;]*)/mi', $response, $matches);
+  $cookies = array();
+  foreach($matches[1] as $item){
+      parse_str($item, $cookie);
+      $cookies = array_merge($cookies, $cookie);
+  }
+  var_dump($cookies);
+
+
+  return array("headers" => $responseHeaders, "body" => $responseBody, "responseInfo" => $responseInfo, "cookies" => $cookies);
 }
 
 //Converts relative URLs to absolute ones, given a base URL.
